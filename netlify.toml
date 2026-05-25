@@ -1,0 +1,4 @@
+[dev]
+  port = 8080
+  functionsPort = 4015
+  publish = "."

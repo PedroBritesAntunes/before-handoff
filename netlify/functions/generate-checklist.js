@@ -1,22 +1,29 @@
 // netlify/functions/generate-checklist.js
-//
-// Recebe POST com os dados do form e devolve a análise completa
-// gerada pela OpenAI: score, summary, severity e subtitle por categoria
-// e items. Toda a informação visível é da API, nada local.
+
+// Função auxiliar para resposta JSON
+const jsonResponse = (statusCode, body) => ({
+  statusCode,
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body),
+});
 
 exports.handler = async function (event) {
+  console.log("Function invoked with method:", event.httpMethod);
+  
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return jsonResponse(405, { error: 'Method Not Allowed' });
   }
 
   if (!process.env.OPENAI_API_KEY) {
+    console.error("Missing OPENAI_API_KEY");
     return jsonResponse(500, { error: 'Server is missing OPENAI_API_KEY env var.' });
   }
 
   let payload;
   try {
     payload = JSON.parse(event.body || '{}');
-  } catch {
+  } catch (err) {
+    console.error("Payload parse error:", err);
     return jsonResponse(400, { error: 'Invalid JSON body.' });
   }
 
@@ -129,6 +136,9 @@ RULES:
         ],
       }),
     });
+    
+    // Debug log para ver o que a OpenAI responde
+    console.log("OpenAI Status:", response.status);
 
     if (!response.ok) {
       let detail = '';
@@ -195,14 +205,7 @@ RULES:
 
     return jsonResponse(200, { score, summary, categories });
   } catch (err) {
-    return jsonResponse(500, { error: 'Unexpected server error.' });
+    console.error("Function Error:", err);
+    return jsonResponse(500, { error: `Internal Server Error: ${err.message}` });
   }
 };
-
-function jsonResponse(statusCode, body) {
-  return {
-    statusCode,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  };
-}
