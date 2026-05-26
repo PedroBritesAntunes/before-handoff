@@ -267,9 +267,9 @@
     .category:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
     .category__header { 
       width: 100%; 
-      padding: var(--sp-5) var(--sp-6); 
+      padding: 18px var(--sp-6); 
       display: flex; 
-      align-items: center; 
+      align-items: flex-start; 
       gap: var(--sp-4); 
       text-align: left; 
       color: white; 
@@ -277,7 +277,7 @@
       border: none;
       cursor: pointer;
     }
-    .category__icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; }
+    .category__icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; margin-top: 2px; }
     .category__icon--red { background: rgba(239, 68, 68, 0.15); color: #FF5252; }
     .category__icon--blue { background: rgba(59, 130, 246, 0.15); color: #42A5F5; }
     .category__icon--lime { background: rgba(163, 230, 53, 0.15); color: var(--lime); }
@@ -287,8 +287,8 @@
     .category__title-group { flex: 1; display: flex; flex-direction: column; gap: 2px; }
     .category__title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; letter-spacing: -0.01em; color: white; line-height: 1.1; }
     .category__subtitle { font-size: 0.8125rem; color: var(--text-muted-on-dark); font-weight: 400; line-height: 1.2; }
-    .badge { padding: 4px 10px; border-radius: var(--r-full); font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
-    .category__chevron { width: 18px; height: 18px; color: var(--text-muted-on-dark); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    .badge { padding: 4px 10px; border-radius: var(--r-full); font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px; }
+    .category__chevron { width: 18px; height: 18px; color: var(--text-muted-on-dark); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); margin-top: 7px; }
     .category__body { 
       display: grid; 
       grid-template-rows: 0fr; 
@@ -312,6 +312,7 @@
     .state-block__title { font-family: var(--font-serif); font-weight: 400; font-size: 2.25rem; color: white; line-height: 1.1; }
     .state-block__text { font-size: 1rem; color: var(--text-muted-on-dark); max-width: 320px; line-height: 1.5; font-weight: 400; }
     .spinner { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,0.05); border-top-color: var(--lime); border-radius: 50%; animation: spin 1s linear infinite; }
+    .btn-spinner { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.25); border-top-color: rgba(255,255,255,0.9); border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-right: 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .toast { position: fixed; bottom: var(--sp-10); left: 50%; transform: translateX(-50%) translateY(100%); background: white; color: var(--black); padding: 16px 32px; border-radius: var(--r-full); font-size: 1rem; font-weight: 800; opacity: 0; transition: var(--transition); z-index: 6000; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 2px solid var(--black); }
@@ -555,7 +556,7 @@
     const SEV_LABEL = { high: "High", medium: "Medium", low: "Low", info: "Info" };
 
     const state = { status: "idle", result: null, lastInput: null, error: null };
-    const el = { form: document.getElementById("handoff-form"), description: document.getElementById("description"), submitBtn: document.getElementById("submit-btn"), submitLabel: document.getElementById("submit-label"), riskStatusText: document.getElementById("risk-status-text"), scorePercent: document.getElementById("score-percent"), scoreRingProgress: document.getElementById("score-ring-progress"), scoreText: document.getElementById("score-text"), stateEmpty: document.getElementById("state-empty"), stateLoading: document.getElementById("state-loading"), stateError: document.getElementById("state-error"), errorMessage: document.getElementById("error-message"), retryBtn: document.getElementById("retry-btn"), categories: document.getElementById("categories"), copyBtn: document.getElementById("copy-btn"), toast: document.getElementById("toast") };
+    const el = { form: document.getElementById("handoff-form"), description: document.getElementById("description"), submitBtn: document.getElementById("submit-btn"), submitLabel: document.getElementById("submit-label"), submitIcon: document.querySelector("#submit-btn svg"), riskStatusText: document.getElementById("risk-status-text"), scorePercent: document.getElementById("score-percent"), scoreRingProgress: document.getElementById("score-ring-progress"), scoreText: document.getElementById("score-text"), stateEmpty: document.getElementById("state-empty"), stateLoading: document.getElementById("state-loading"), stateError: document.getElementById("state-error"), errorMessage: document.getElementById("error-message"), retryBtn: document.getElementById("retry-btn"), categories: document.getElementById("categories"), copyBtn: document.getElementById("copy-btn"), toast: document.getElementById("toast") };
 
     function escapeHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
     function readForm() { 
@@ -580,7 +581,8 @@
       el.categories.classList.toggle("hidden", state.status !== "result");
       const loading = state.status === "loading";
       el.submitBtn.disabled = loading;
-      el.submitLabel.innerHTML = loading ? '<span class="spinner" style="width:20px;height:20px;border-width:4px;margin-right:12px;"></span> Analyzing...' : 'Run Risk Review';
+      el.submitLabel.innerHTML = loading ? '<span class="btn-spinner"></span>Analyzing...' : 'Run Risk Review';
+      if (el.submitIcon) el.submitIcon.classList.toggle("hidden", loading);
       if (state.status === "error") el.errorMessage.textContent = state.error || "Analysis failed.";
       if (state.status === "result" && state.result) renderResult(state.result);
       else { el.scorePercent.textContent = "—"; el.scoreRingProgress.style.strokeDashoffset = "283"; el.scoreText.textContent = "Complete the form to generate your report."; el.riskStatusText.textContent = "Ready"; el.copyBtn.disabled = true; }
