@@ -253,11 +253,11 @@
 
     /* Score UI (Dark Mode) */
     .score-hero { display: flex; align-items: center; gap: var(--sp-8); padding: var(--sp-6); background: rgba(255,255,255,0.03); border-radius: var(--r-md); border: 1px solid rgba(255,255,255,0.05); position: relative; }
-    .score-circle { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
-    .score-circle svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .score-circle { position: relative; width: 100px; height: 100px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .score-circle svg { transform: rotate(-90deg); width: 100%; height: 100%; overflow: visible; position: absolute; inset: 0; }
     .score-circle__bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 10; }
-    .score-circle__progress { fill: none; stroke: var(--lime); stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 0 8px var(--lime)); transition: stroke-dashoffset 2s cubic-bezier(0.23, 1, 0.32, 1); }
-    .score-circle__text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 2rem; color: white; letter-spacing: -0.05em; }
+    .score-circle__progress { fill: none; stroke: var(--lime); stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 0 12px var(--lime)); transition: stroke-dashoffset 2s cubic-bezier(0.23, 1, 0.32, 1); }
+    .score-circle__text { position: relative; font-weight: 700; font-size: 2rem; color: white; letter-spacing: -0.05em; z-index: 10; }
     .score-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
     .score-info__label { font-size: 0.625rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted-on-dark); letter-spacing: 0.15em; }
     .score-info__summary { font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.2; color: white; font-weight: 400; }
@@ -279,6 +279,10 @@
     .category__subtitle { font-size: 0.75rem; color: var(--text-muted-on-dark); margin-top: 2px; font-weight: 400; }
     .badge { padding: 4px 10px; border-radius: var(--r-full); font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
     .category__chevron { width: 18px; height: 18px; color: var(--text-muted-on-dark); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    .category__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    .category[aria-expanded="true"] .category__body { grid-template-rows: 1fr; }
+    .category__list { overflow: hidden; padding: 0 var(--sp-6) var(--sp-8) 64px; display: flex; flex-direction: column; gap: var(--sp-3); }
+    .category[aria-expanded="true"] .category__chevron { transform: rotate(90deg); }
     .category__list li { font-size: 0.9375rem; color: var(--text-muted-on-dark); position: relative; line-height: 1.5; }
     .category__list li::before { content: ""; position: absolute; left: -22px; top: 8px; width: 8px; height: 8px; border-radius: 3px; background: var(--lime); box-shadow: 0 0 10px var(--lime); }
 
