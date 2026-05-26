@@ -1,3 +1,7 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
 [dev]
   port = 8080
   functionsPort = 4015
