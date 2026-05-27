@@ -30,11 +30,14 @@
       --text-muted: #94A3B8;
       --text-on-dark: #FFFFFF;
       --text-muted-on-dark: #8E8E93;
+      --text-secondary-on-dark: #C1C9D6;
       
       --lime: #A3E635;
       --lime-strong: #84CC16;
       --lime-dark: #3F6212;
       --lime-soft: #ECFCCB;
+      --amber: #F59E0B;
+      --red: #EF4444;
 
       /* Spacing - REDUCED SCALE */
       --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
@@ -247,7 +250,10 @@
     }
     .risk-panel__header { padding: var(--sp-6) var(--sp-8); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01); position: relative; }
     .risk-panel__title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted-on-dark); }
-    .risk-status { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--lime); letter-spacing: 0.1em; }
+    .risk-status { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--lime); letter-spacing: 0.1em; display: inline-flex; align-items: center; gap: 10px; }
+    .risk-status-spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.25); border-top-color: rgba(255,255,255,0.85); border-radius: 50%; animation: spin 1s linear infinite; }
+    #risk-status-text[data-state="idle"] { color: var(--text-muted-on-dark); }
+    #risk-status-text[data-state="error"] { color: #F87171; }
     .risk-panel__content { padding: var(--sp-8); flex: 1; display: flex; flex-direction: column; gap: var(--sp-8); position: relative; }
 
     /* Score UI (Dark Mode) */
@@ -255,7 +261,7 @@
     .score-circle { position: relative; width: 100px; height: 100px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .score-circle svg { transform: rotate(-90deg); width: 100%; height: 100%; overflow: visible; position: absolute; inset: 0; }
     .score-circle__bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 10; }
-    .score-circle__progress { fill: none; stroke: var(--lime); stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 0 12px var(--lime)); transition: stroke-dashoffset 2s cubic-bezier(0.23, 1, 0.32, 1); }
+    .score-circle__progress { fill: none; stroke: var(--score-color, var(--lime)); stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 0 12px var(--score-color, var(--lime))); transition: stroke-dashoffset 2s cubic-bezier(0.23, 1, 0.32, 1); }
     .score-circle__text { position: relative; font-weight: 700; font-size: 1.5rem; color: white; letter-spacing: -0.05em; z-index: 10; }
     .score-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
     .score-info__label { font-size: 0.625rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted-on-dark); letter-spacing: 0.15em; }
@@ -267,9 +273,10 @@
     .category:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
     .category__header { 
       width: 100%; 
-      padding: 18px var(--sp-6); 
+      padding: 12px var(--sp-6); 
       display: flex; 
-      align-items: flex-start; 
+      align-items: center; 
+      justify-content: flex-start;
       gap: var(--sp-4); 
       text-align: left; 
       color: white; 
@@ -277,18 +284,18 @@
       border: none;
       cursor: pointer;
     }
-    .category__icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; margin-top: 2px; }
+    .category__icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; }
     .category__icon--red { background: rgba(239, 68, 68, 0.15); color: #FF5252; }
     .category__icon--blue { background: rgba(59, 130, 246, 0.15); color: #42A5F5; }
     .category__icon--lime { background: rgba(163, 230, 53, 0.15); color: var(--lime); }
     .category__icon--orange { background: rgba(245, 158, 11, 0.15); color: #FFA726; }
     .category__icon--rose { background: rgba(225, 29, 72, 0.15); color: #FF4081; }
     .category__icon--teal { background: rgba(13, 148, 136, 0.15); color: #26A69A; }
-    .category__title-group { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .category__title-group { flex: 1; display: flex; flex-direction: column; gap: 12px; }
     .category__title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; letter-spacing: -0.01em; color: white; line-height: 1.1; }
-    .category__subtitle { font-size: 0.8125rem; color: var(--text-muted-on-dark); font-weight: 400; line-height: 1.2; }
-    .badge { padding: 4px 10px; border-radius: var(--r-full); font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px; }
-    .category__chevron { width: 18px; height: 18px; color: var(--text-muted-on-dark); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); margin-top: 7px; }
+    .category__subtitle { font-size: 0.8125rem; color: var(--text-secondary-on-dark); font-weight: 400; line-height: 1.2; }
+    .badge { padding: 4px 10px; border-radius: var(--r-full); font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+    .category__chevron { width: 18px; height: 18px; color: var(--text-muted-on-dark); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
     .category__body { 
       display: grid; 
       grid-template-rows: 0fr; 
@@ -296,9 +303,10 @@
       overflow: hidden;
     }
     .category[aria-expanded="true"] .category__body { grid-template-rows: 1fr; }
-    .category__list { min-height: 0; padding: 0 var(--sp-6) var(--sp-6) 60px; display: flex; flex-direction: column; gap: var(--sp-2); }
+    .category__list { min-height: 0; padding: 0 var(--sp-6) 0 60px; display: flex; flex-direction: column; gap: var(--sp-2); }
     .category[aria-expanded="true"] .category__chevron { transform: rotate(90deg); }
-    .category__list li { font-size: 0.875rem; color: var(--text-muted-on-dark); position: relative; line-height: 1.4; opacity: 0; transform: translateY(10px); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    .category[aria-expanded="true"] .category__list { padding-bottom: var(--sp-6); }
+    .category__list li { font-size: 0.875rem; color: var(--text-secondary-on-dark); position: relative; line-height: 1.4; opacity: 0; transform: translateY(10px); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
     .category[aria-expanded="true"] .category__list li { opacity: 1; transform: translateY(0); }
     .category__list li::before { content: ""; position: absolute; left: -22px; top: 6px; width: 6px; height: 6px; border-radius: 2px; background: var(--lime); box-shadow: 0 0 10px var(--lime); }
 
@@ -306,16 +314,29 @@
     .risk-panel__footer { padding: var(--sp-6) var(--sp-8); border-top: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.01); display: flex; justify-content: center; }
     .copy-btn { width: 100%; background: var(--lime); color: var(--black); padding: 14px 24px; border-radius: var(--r-full); font-weight: 700; font-size: 0.9375rem; gap: var(--sp-2); box-shadow: 0 4px 12px rgba(163, 230, 53, 0.2); border: none; }
     .copy-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(163, 230, 53, 0.3); }
+    .copy-btn:disabled { background: #E5E7EB; color: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
 
     /* States */
     .state-block { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: var(--sp-4); padding: var(--sp-10) var(--sp-6); border: 1.5px dashed rgba(255,255,255,0.1); border-radius: var(--r-lg); }
     .state-block__title { font-family: var(--font-serif); font-weight: 400; font-size: 2.25rem; color: white; line-height: 1.1; }
-    .state-block__text { font-size: 1rem; color: var(--text-muted-on-dark); max-width: 320px; line-height: 1.5; font-weight: 400; }
+    .state-block__text { font-size: 1rem; color: var(--text-secondary-on-dark); max-width: 320px; line-height: 1.5; font-weight: 400; }
     .spinner { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,0.05); border-top-color: var(--lime); border-radius: 50%; animation: spin 1s linear infinite; }
     .btn-spinner { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.25); border-top-color: rgba(255,255,255,0.9); border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-right: 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .toast { position: fixed; bottom: var(--sp-10); left: 50%; transform: translateX(-50%) translateY(100%); background: white; color: var(--black); padding: 16px 32px; border-radius: var(--r-full); font-size: 1rem; font-weight: 800; opacity: 0; transition: var(--transition); z-index: 6000; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 2px solid var(--black); }
+    .score-preview { display: flex; align-items: baseline; gap: 10px; padding: 0 2px; color: var(--text-muted-on-dark); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; }
+    .score-preview__label { color: rgba(255,255,255,0.7); }
+    .score-preview__dot { color: rgba(255,255,255,0.28); }
+    .score-preview__value { color: rgba(255,255,255,0.55); }
+
+    #state-empty { align-items: stretch; justify-content: flex-start; text-align: left; gap: var(--sp-6); padding: var(--sp-8) var(--sp-6); }
+    #state-empty .state-block__text { max-width: 440px; }
+    .empty-preview { display: flex; flex-direction: column; gap: var(--sp-3); opacity: 0.65; }
+    .empty-preview__card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--r-md); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .empty-preview__title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 400; color: rgba(255,255,255,0.75); letter-spacing: -0.01em; }
+    .empty-preview__pill { width: 62px; height: 18px; border-radius: 9999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); }
+
+    .toast { position: fixed; bottom: var(--sp-8); left: 50%; transform: translateX(-50%) translateY(100%); background: rgba(15, 15, 18, 0.92); color: white; padding: 12px 16px; border-radius: var(--r-md); font-size: 0.875rem; font-weight: 600; opacity: 0; transition: var(--transition); z-index: 6000; box-shadow: 0 20px 40px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.12); }
     .toast.is-visible { transform: translateX(-50%) translateY(0); opacity: 1; }
 
     @media (max-width: 1024px) { .workspace { grid-template-columns: 1fr; } .app { padding: var(--sp-8) var(--sp-6); } }
@@ -425,7 +446,7 @@
           <div class="field">
             <label class="label" for="description">Describe the behavior</label>
             <textarea id="description" class="textarea" required placeholder="Explain what this flow does, the user journey, and key interactions..."></textarea>
-            <p id="description-error" class="hidden" style="font-size: 0.875rem; color: var(--sev-high-text); font-weight: 700; margin-top: 6px;">Behavior description is required to start the analysis.</p>
+            <p id="description-error" class="hidden" style="font-size: 0.8125rem; color: var(--text-secondary); font-weight: 500; margin-top: 6px;">Add at least 40 characters to run the analysis.</p>
           </div>
         </div>
 
@@ -462,10 +483,18 @@
       <aside class="risk-panel" id="risk-panel">
         <div class="risk-panel__header">
           <span class="risk-panel__title">AI Risk Report</span>
-          <div class="risk-status" id="risk-status-text">Ready</div>
+          <div class="risk-status">
+            <span id="risk-status-spinner" class="risk-status-spinner hidden"></span>
+            <span id="risk-status-text" data-state="idle">Awaiting input</span>
+          </div>
         </div>
 
         <div class="risk-panel__content">
+          <div id="score-preview" class="score-preview">
+            <span class="score-preview__label">Readiness score</span>
+            <span class="score-preview__dot">·</span>
+            <span class="score-preview__value">— / 100</span>
+          </div>
           <div class="score-hero" id="score-hero">
             <div class="score-circle">
               <svg viewBox="0 0 100 100"><circle class="score-circle__bg" cx="50" cy="50" r="45"/><circle id="score-ring-progress" class="score-circle__progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="283"/></svg>
@@ -481,6 +510,32 @@
           <div id="state-empty" class="state-block">
             <div class="state-block__title">Waiting for input</div>
             <p class="state-block__text">Provide a behavior description to start the AI analysis.</p>
+            <div class="empty-preview" aria-hidden="true">
+              <div class="empty-preview__card">
+                <div class="empty-preview__title">Missing states</div>
+                <div class="empty-preview__pill"></div>
+              </div>
+              <div class="empty-preview__card">
+                <div class="empty-preview__title">Accessibility risks</div>
+                <div class="empty-preview__pill"></div>
+              </div>
+              <div class="empty-preview__card">
+                <div class="empty-preview__title">Product logic gaps</div>
+                <div class="empty-preview__pill"></div>
+              </div>
+              <div class="empty-preview__card">
+                <div class="empty-preview__title">Edge cases</div>
+                <div class="empty-preview__pill"></div>
+              </div>
+              <div class="empty-preview__card">
+                <div class="empty-preview__title">Developer questions</div>
+                <div class="empty-preview__pill"></div>
+              </div>
+              <div class="empty-preview__card">
+                <div class="empty-preview__title">Suggested acceptance criteria</div>
+                <div class="empty-preview__pill"></div>
+              </div>
+            </div>
           </div>
 
           <div id="state-loading" class="state-block hidden">
@@ -554,11 +609,86 @@
     const CATEGORY_ICON = { "missing-states": { variant: "red", icon: "alert-triangle" }, "accessibility": { variant: "blue", icon: "accessibility" }, "product-logic": { variant: "lime", icon: "brain" }, "edge-cases": { variant: "orange", icon: "alert-circle" }, "developer-questions": { variant: "rose", icon: "help-circle" }, "acceptance-criteria": { variant: "teal", icon: "check-square" } };
     const ICONS = { "alert-triangle": '<path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>', "alert-circle": '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/>', "accessibility": '<circle cx="12" cy="4" r="2"/><path d="M4 8h16M12 8v6m-4 8l4-6 4 6" stroke-linecap="round"/>', "brain": '<path d="M9 3a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3 3 3 0 0 0 1.5 2.6A3 3 0 0 0 6 17v1a3 3 0 1 0 6 0V6a3 3 0 0 0-3-3zm6 0a3 3 0 0 1 3 3v1a3 3 0 0 1 3 3 3 3 0 0 1-1.5 2.6A3 3 0 0 1 18 17v1a3 3 0 1 1-6 0V6a3 3 0 0 1 3-3z"/>', "help-circle": '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 4M12 17h.01" stroke-linecap="round"/>', "check-square": '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>' };
     const SEV_LABEL = { high: "High", medium: "Medium", low: "Low", info: "Info" };
+    const MOCK_MODE = new URLSearchParams(window.location.search).has("mock");
+    const MIN_DESCRIPTION_CHARS = 40;
+    const MOCK_RESULT = {
+      score: 75,
+      summary: "The filter drawer design is well-structured, but needs clarification on interaction states and edge cases.",
+      categories: [
+        {
+          id: "missing-states",
+          title: "Missing states",
+          subtitle: "Unaddressed states in filter interactions",
+          severity: "high",
+          items: [
+            "No defined state for error handling when filters fail to load.",
+            "Missing empty state messaging for zero results after applying filters.",
+            "No clear disabled state for Apply/Reset actions when nothing changed."
+          ]
+        },
+        {
+          id: "accessibility",
+          title: "Accessibility risks",
+          subtitle: "Ensure all elements are keyboard navigable.",
+          severity: "high",
+          items: [
+            "Check if dropdowns are accessible via keyboard.",
+            "Ensure focus is trapped within the drawer when open.",
+            "Add ARIA labels for dropdowns and buttons."
+          ]
+        },
+        {
+          id: "product-logic",
+          title: "Product logic gaps",
+          subtitle: "Clarify the behavior of filters and interactions.",
+          severity: "medium",
+          items: [
+            "Clarify what happens when the user closes the drawer without applying changes.",
+            "Define whether filters apply instantly or only on 'Apply'.",
+            "Specify whether selected filters persist between sessions."
+          ]
+        },
+        {
+          id: "edge-cases",
+          title: "Edge cases",
+          subtitle: "Identify potential user interaction scenarios.",
+          severity: "low",
+          items: [
+            "What if the user opens the drawer with existing filters already applied?",
+            "What happens if the network drops while the drawer is open?",
+            "How does the UI behave when a filter list is longer than the viewport?"
+          ]
+        },
+        {
+          id: "developer-questions",
+          title: "Developer questions",
+          subtitle: "Clarifications needed for implementation.",
+          severity: "info",
+          items: [
+            "What should the default state of filters be when the drawer opens?",
+            "Should Reset clear all filters or only changes since open?",
+            "How should analytics events be tracked for filter changes?"
+          ]
+        },
+        {
+          id: "acceptance-criteria",
+          title: "Suggested acceptance criteria",
+          subtitle: "Define clear success metrics for development.",
+          severity: "info",
+          items: [
+            "Filter application reflects immediately in the results list.",
+            "Keyboard navigation works for all controls and focus returns correctly.",
+            "States exist for loading, empty results, and API error."
+          ]
+        }
+      ]
+    };
 
     const state = { status: "idle", result: null, lastInput: null, error: null };
-    const el = { form: document.getElementById("handoff-form"), description: document.getElementById("description"), submitBtn: document.getElementById("submit-btn"), submitLabel: document.getElementById("submit-label"), submitIcon: document.querySelector("#submit-btn svg"), riskStatusText: document.getElementById("risk-status-text"), scorePercent: document.getElementById("score-percent"), scoreRingProgress: document.getElementById("score-ring-progress"), scoreText: document.getElementById("score-text"), stateEmpty: document.getElementById("state-empty"), stateLoading: document.getElementById("state-loading"), stateError: document.getElementById("state-error"), errorMessage: document.getElementById("error-message"), retryBtn: document.getElementById("retry-btn"), categories: document.getElementById("categories"), copyBtn: document.getElementById("copy-btn"), toast: document.getElementById("toast") };
+    const el = { form: document.getElementById("handoff-form"), description: document.getElementById("description"), submitBtn: document.getElementById("submit-btn"), submitLabel: document.getElementById("submit-label"), submitIcon: document.querySelector("#submit-btn svg"), riskStatusText: document.getElementById("risk-status-text"), riskStatusSpinner: document.getElementById("risk-status-spinner"), scorePreview: document.getElementById("score-preview"), scoreHero: document.getElementById("score-hero"), scorePercent: document.getElementById("score-percent"), scoreRingProgress: document.getElementById("score-ring-progress"), scoreText: document.getElementById("score-text"), stateEmpty: document.getElementById("state-empty"), stateLoading: document.getElementById("state-loading"), stateError: document.getElementById("state-error"), errorMessage: document.getElementById("error-message"), retryBtn: document.getElementById("retry-btn"), categories: document.getElementById("categories"), copyBtn: document.getElementById("copy-btn"), toast: document.getElementById("toast") };
 
     function escapeHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+    function isDescriptionSufficient(s) { return String(s || "").trim().length >= MIN_DESCRIPTION_CHARS; }
     function readForm() { 
       const states = Array.from(document.querySelectorAll('#states-group input:checked')).map((i) => i.value); 
       return { 
@@ -571,8 +701,21 @@
         statesConsidered: states 
       }; 
     }
-    function validate(input) { if (!input.description) { document.getElementById("description-error").classList.remove("hidden"); el.description.focus(); return false; } document.getElementById("description-error").classList.add("hidden"); return true; }
-    el.description.addEventListener("input", () => { if (el.description.value.trim()) document.getElementById("description-error").classList.add("hidden"); });
+    function validate(input) { 
+      if (!isDescriptionSufficient(input.description)) { 
+        document.getElementById("description-error").classList.remove("hidden"); 
+        el.description.focus(); 
+        return false; 
+      } 
+      document.getElementById("description-error").classList.add("hidden"); 
+      return true; 
+    }
+    el.description.addEventListener("input", () => { 
+      const trimmed = el.description.value.trim();
+      const show = trimmed.length > 0 && !isDescriptionSufficient(trimmed);
+      document.getElementById("description-error").classList.toggle("hidden", !show);
+      render();
+    });
 
     function render() {
       el.stateEmpty.classList.toggle("hidden", state.status !== "idle");
@@ -580,22 +723,38 @@
       el.stateError.classList.toggle("hidden", state.status !== "error");
       el.categories.classList.toggle("hidden", state.status !== "result");
       const loading = state.status === "loading";
-      el.submitBtn.disabled = loading;
+      const canSubmit = isDescriptionSufficient(el.description.value);
+      el.submitBtn.disabled = loading || !canSubmit;
       el.submitLabel.innerHTML = loading ? '<span class="btn-spinner"></span>Analyzing...' : 'Run Risk Review';
       if (el.submitIcon) el.submitIcon.classList.toggle("hidden", loading);
       if (state.status === "error") el.errorMessage.textContent = state.error || "Analysis failed.";
+      if (state.status === "loading") el.riskStatusText.textContent = "Analyzing…";
+      else if (state.status === "result") el.riskStatusText.textContent = "Report ready";
+      else if (state.status === "error") el.riskStatusText.textContent = "Something went wrong";
+      else el.riskStatusText.textContent = "Awaiting input";
+      el.riskStatusText.dataset.state = state.status;
+      if (el.riskStatusSpinner) el.riskStatusSpinner.classList.toggle("hidden", state.status !== "loading");
+      el.copyBtn.disabled = state.status !== "result";
+      if (el.scoreHero) {
+        el.scoreHero.classList.toggle("hidden", state.status === "idle");
+        if (state.status !== "result") el.scoreHero.style.removeProperty("--score-color");
+      }
+      if (el.scorePreview) el.scorePreview.classList.toggle("hidden", state.status !== "idle");
       if (state.status === "result" && state.result) renderResult(state.result);
-      else { el.scorePercent.textContent = "—"; el.scoreRingProgress.style.strokeDashoffset = "283"; el.scoreText.textContent = "Complete the form to generate your report."; el.riskStatusText.textContent = "Ready"; el.copyBtn.disabled = true; }
+      else { el.scorePercent.textContent = "—"; el.scoreRingProgress.style.strokeDashoffset = "283"; el.scoreText.textContent = "Complete the form to generate your report."; }
     }
 
     function renderResult(result) {
       const score = typeof result.score === "number" ? result.score : 0;
+      const scoreColor = score >= 70 ? "#A3E635" : score >= 40 ? "#F59E0B" : "#EF4444";
+      if (el.scoreHero) el.scoreHero.style.setProperty("--score-color", scoreColor);
       const circumference = 2 * Math.PI * 45;
       el.scoreRingProgress.style.strokeDasharray = circumference;
       el.scoreRingProgress.style.strokeDashoffset = circumference * (1 - score / 100);
       el.scorePercent.textContent = `${score}%`;
       el.scoreText.textContent = result.summary || "—";
-      el.riskStatusText.textContent = "Analysis Complete";
+      el.riskStatusText.textContent = "Report ready";
+      el.riskStatusText.dataset.state = "result";
       el.categories.innerHTML = "";
       result.categories.forEach((cat) => {
         if (!cat.items || cat.items.length === 0) return;
@@ -645,8 +804,14 @@
         state.result = data; 
         state.status = "result";
       } catch (err) { 
-        state.status = "error"; 
-        state.error = err.message; 
+        if (MOCK_MODE) {
+          state.result = MOCK_RESULT;
+          state.status = "result";
+          state.error = null;
+        } else {
+          state.status = "error"; 
+          state.error = err.message; 
+        }
         console.error("Fetch Error:", err);
       }
       render();
@@ -659,24 +824,76 @@
       if (!state.result || !state.lastInput) return;
       const r = state.result;
       const i = state.lastInput;
-      let s = `# Before Handoff — Risk Review: ${i.flowName || 'Untitled'}\n\n`;
-      s += `**Type:** ${i.deliveryType} | **Interface:** ${i.interfaceType} | **Context:** ${i.productContext}\n`;
-      s += `**Readiness:** ${r.score}%\n\n`;
-      s += `## Summary\n${r.summary}\n\n`;
-      
-      if (i.statesConsidered.length) {
-        s += `**States Considered:** ${i.statesConsidered.join(', ')}\n\n`;
+      const title = i.flowName || "Untitled";
+      const readiness = typeof r.score === "number" ? `${r.score}/100` : "—/100";
+      const metaBits = [
+        i.deliveryType ? `Type: ${i.deliveryType}` : null,
+        i.interfaceType ? `Interface: ${i.interfaceType}` : null,
+        i.productContext ? `Context: ${i.productContext}` : null
+      ].filter(Boolean);
+      const metaLine = metaBits.join(" · ");
+      const statesLine = (Array.isArray(i.statesConsidered) && i.statesConsidered.length)
+        ? `States considered: ${i.statesConsidered.join(", ")}`
+        : "";
+
+      const plainParts = [];
+      plainParts.push(`Before Handoff — Risk Review`);
+      plainParts.push(title);
+      plainParts.push("");
+      if (metaLine) plainParts.push(metaLine);
+      plainParts.push(`Readiness score: ${readiness}`);
+      if (statesLine) plainParts.push(statesLine);
+      plainParts.push("");
+      if (r.summary) {
+        plainParts.push("Summary");
+        plainParts.push(r.summary);
+        plainParts.push("");
       }
-      
-      r.categories.filter(c => c.items.length).forEach((c) => { 
-        s += `## ${c.title} (${SEV_LABEL[c.severity || 'low']})\n`; 
-        c.items.forEach((it) => { s += `- [ ] ${it}\n`; }); 
-        s += `\n`; 
-      });
-      
+      r.categories
+        .filter((c) => Array.isArray(c.items) && c.items.length)
+        .forEach((c) => {
+          const sev = SEV_LABEL[c.severity || "low"] || "Low";
+          plainParts.push(`${c.title} (${sev})`);
+          if (c.subtitle) plainParts.push(c.subtitle);
+          c.items.forEach((it) => plainParts.push(`☐ ${it}`));
+          plainParts.push("");
+        });
+      const plain = plainParts.join("\n").trim();
+
+      const htmlParts = [];
+      htmlParts.push(`<h2>${escapeHtml("Before Handoff — Risk Review")}</h2>`);
+      htmlParts.push(`<h3>${escapeHtml(title)}</h3>`);
+      if (metaLine) htmlParts.push(`<p>${escapeHtml(metaLine)}</p>`);
+      htmlParts.push(`<p><strong>${escapeHtml("Readiness score:")}</strong> ${escapeHtml(readiness)}</p>`);
+      if (statesLine) htmlParts.push(`<p>${escapeHtml(statesLine)}</p>`);
+      if (r.summary) {
+        htmlParts.push(`<h3>${escapeHtml("Summary")}</h3>`);
+        htmlParts.push(`<p>${escapeHtml(r.summary)}</p>`);
+      }
+      r.categories
+        .filter((c) => Array.isArray(c.items) && c.items.length)
+        .forEach((c) => {
+          const sev = SEV_LABEL[c.severity || "low"] || "Low";
+          htmlParts.push(`<h3>${escapeHtml(c.title)} <span>(${escapeHtml(sev)})</span></h3>`);
+          if (c.subtitle) htmlParts.push(`<p>${escapeHtml(c.subtitle)}</p>`);
+          htmlParts.push(`<ul>`);
+          c.items.forEach((it) => htmlParts.push(`<li>${escapeHtml("☐ " + it)}</li>`));
+          htmlParts.push(`</ul>`);
+        });
+      const html = htmlParts.join("");
+
       try { 
-        await navigator.clipboard.writeText(s); 
-        el.toast.textContent = "Checklist copied to clipboard ✓"; 
+        if (window.ClipboardItem && navigator.clipboard?.write) {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              "text/html": new Blob([html], { type: "text/html" }),
+              "text/plain": new Blob([plain], { type: "text/plain" })
+            })
+          ]);
+        } else {
+          await navigator.clipboard.writeText(plain);
+        }
+        el.toast.textContent = "Copied. Paste into your handoff doc."; 
         el.toast.classList.add("is-visible"); 
         setTimeout(() => el.toast.classList.remove("is-visible"), 3000); 
       } catch (err) {}

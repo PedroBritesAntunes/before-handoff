@@ -35,6 +35,9 @@ exports.handler = async function (event) {
   if (!description || !description.trim()) {
     return jsonResponse(400, { error: 'Description is required.' });
   }
+  if (description.trim().length < 40) {
+    return jsonResponse(400, { error: 'Description must be at least 40 characters.' });
+  }
   if (description.length > 4000 || (businessRules && businessRules.length > 4000)) {
     return jsonResponse(400, {
       error: 'Input too long. Keep description and business rules under 4000 chars each.',
@@ -98,7 +101,7 @@ RULES:
 - "score" — handoff readiness from 0 to 100. Higher = fewer/less critical risks AND more detailed input. Be honest: a one-line description with many gaps should score low.
 - "summary" — 1 sentence, specific to the input. Reference what's strong and what needs work. No generic phrases like "Solid progress!".
 - "subtitle" — specific to this handoff and category. Avoid generic phrases. Each category gets a UNIQUE subtitle tailored to the input.
-- "severity" — "high" = blocks ship; "medium" = needs attention; "low" = minor polish; "info" = informational only. ALWAYS "info" for "developer-questions" and "acceptance-criteria".
+- "severity" — Use the full severity range. Be decisive: if something is critical or a clear blocker, mark it "high"; if it's minor polish, mark it "low". Avoid assigning "medium" to everything. ALWAYS "info" for "developer-questions" and "acceptance-criteria".
 - Exactly 6 categories, in the order above, with those exact ids and titles.
 - 3 to 5 items per category. Each item one short sentence (max ~20 words), specific to the input.
 - If user listed "States considered", do NOT include matching items in "Missing states".
@@ -128,7 +131,7 @@ RULES:
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
-        temperature: 0.6,
+        temperature: 0.3,
         response_format: { type: 'json_object' },
         messages: [
           { role: 'system', content: systemPrompt },
